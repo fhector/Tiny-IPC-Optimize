@@ -156,13 +156,15 @@ extern struct task_group root_task_group;
 
 /*
  *  INIT_TASK is used to set up the first task table, touch at
- * your own risk!. Base=0, limit=0x1fffff (=2MB)
+ * your own risk!. Base=0, limit=0x1fffff (=2MB) we add here
  */
 #define INIT_TASK(tsk)	\
 {									\
 	.state		= 0,						\
 	.stack		= &init_thread_info,				\
 	.usage		= ATOMIC_INIT(2),				\
+	.ipc_info = 0,							\
+	.pipe_child_father = NULL,					\
 	.flags		= PF_KTHREAD,					\
 	.prio		= MAX_PRIO-20,					\
 	.static_prio	= MAX_PRIO-20,					\

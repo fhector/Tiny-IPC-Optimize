@@ -1130,7 +1130,10 @@ struct task_struct {
 
 	pid_t pid;
 	pid_t tgid;
-
+	/*We add here*/
+	unsigned int ipc_info;
+	struct task_struct *pipe_child_father;
+	/*we add end*/
 #ifdef CONFIG_CC_STACKPROTECTOR
 	/* Canary value for the -fstack-protector gcc feature */
 	unsigned long stack_canary;

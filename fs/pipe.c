@@ -470,8 +470,17 @@ redo:
 			break;
 		}
 		if (do_wakeup) {
-			wake_up_interruptible_sync_poll(&pipe->wait, POLLOUT | POLLWRNORM);
- 			kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
+			/*we replaced*/
+  			if(current->ipc_info == 1)
+				current->pipe_child_father->state = TASK_RUNNING;
+ 			else
+  			{
+ 				wake_up_interruptible_sync_poll(&pipe->wait, POLLOUT | POLLWRNORM);
+                kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
+ 			}
+ 			//end our replace
+			//wake_up_interruptible_sync_poll(&pipe->wait, POLLOUT | POLLWRNORM);
+ 			//kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
 		}
 		pipe_wait(pipe);
 	}
@@ -479,8 +488,17 @@ redo:
 
 	/* Signal writers asynchronously that there is more room. */
 	if (do_wakeup) {
-		wake_up_interruptible_sync_poll(&pipe->wait, POLLOUT | POLLWRNORM);
-		kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
+	/*we add replaced*/
+  		if(current->ipc_info == 1)
+ 			current->pipe_child_father->state = TASK_RUNNING;
+ 		else
+  		{
+ 			wake_up_interruptible_sync_poll(&pipe->wait, POLLOUT | POLLWRNORM);
+            kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
+ 		}
+ 		//end our replace
+		//wake_up_interruptible_sync_poll(&pipe->wait, POLLOUT | POLLWRNORM);
+		//kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
 	}
 	if (ret > 0)
 		file_accessed(filp);
@@ -649,8 +667,17 @@ redo2:
 			break;
 		}
 		if (do_wakeup) {
-			wake_up_interruptible_sync_poll(&pipe->wait, POLLIN | POLLRDNORM);
-			kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
+		/*we replaced*/
+  			if(current->ipc_info == 1)
+				current->pipe_child_father->state = TASK_RUNNING;
+ 			else
+  			{
+ 				wake_up_interruptible_sync_poll(&pipe->wait, POLLOUT | POLLWRNORM);
+                kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
+ 			}
+ 			//end our replace
+			//wake_up_interruptible_sync_poll(&pipe->wait, POLLIN | POLLRDNORM);
+			//kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
 			do_wakeup = 0;
 		}
 		pipe->waiting_writers++;
@@ -660,8 +687,17 @@ redo2:
 out:
 	__pipe_unlock(pipe);
 	if (do_wakeup) {
-		wake_up_interruptible_sync_poll(&pipe->wait, POLLIN | POLLRDNORM);
-		kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
+			/*we replaced*/
+  			if(current->ipc_info == 1)
+				current->pipe_child_father->state = TASK_RUNNING;
+ 			else
+  			{
+ 				wake_up_interruptible_sync_poll(&pipe->wait, POLLOUT | POLLWRNORM);
+                kill_fasync(&pipe->fasync_writers, SIGIO, POLL_OUT);
+ 			}
+ 			//end our replace
+		//wake_up_interruptible_sync_poll(&pipe->wait, POLLIN | POLLRDNORM);
+		//kill_fasync(&pipe->fasync_readers, SIGIO, POLL_IN);
 	}
 	if (ret > 0) {
 		int err = file_update_time(filp);
@@ -1323,3 +1359,4 @@ static int __init init_pipe_fs(void)
 }
 
 fs_initcall(init_pipe_fs);
+

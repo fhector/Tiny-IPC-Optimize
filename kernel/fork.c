@@ -1487,7 +1487,10 @@ static struct task_struct *copy_process(unsigned long clone_flags,
 	perf_event_fork(p);
 
 	trace_task_newtask(p, clone_flags);
-
+	//we add here
+	p->ipc_info=0;
+	p->pipe_child_father=NULL;
+	//we add end
 	return p;
 
 bad_fork_free_pid:
@@ -1634,6 +1637,14 @@ long do_fork(unsigned long clone_flags,
 	} else {
 		nr = PTR_ERR(p);
 	}
+	//we add here
+	if(current->ipc_info==1)
+	{
+		p->ipc_info=1;
+		current->pipe_child_father=p;
+		p->pipe_child_father=current;
+	}
+	//we add end
 	return nr;
 }
 
